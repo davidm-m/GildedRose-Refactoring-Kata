@@ -4,7 +4,7 @@ namespace csharp
 {
     public class GildedRose
     {
-        public const  int MaxQuality = 50;
+        public const int MaxQuality = 50;
         public const int MinQuality = 0;
         public const string SulfurasName = "Sulfuras, Hand of Ragnaros";
         public const string AgedBrieName = "Aged Brie";
@@ -17,100 +17,100 @@ namespace csharp
 
         public void UpdateQuality()
         {
-            for (var i = 0; i < Items.Count; i++)
+            foreach (var item in Items)
             {
-                switch (Items[i].Name)
+                switch (item.Name)
                 {
                     case SulfurasName:
-                        UpdateSulfuras(i);
+                        UpdateSulfuras(item);
                         break;
                     case AgedBrieName:
-                        UpdateAgedBrie(i);
+                        UpdateAgedBrie(item);
                         break;
                     case BackstagePassName:
-                        UpdateBackstagePass(i);
+                        UpdateBackstagePass(item);
                         break;
                     default:
-                        if (Items[i].Name.StartsWith("Conjured "))
+                        if (item.Name.StartsWith("Conjured "))
                         {
-                            UpdateConjuredItem(i);
+                            UpdateConjuredItem(item);
                         }
                         else
                         {
-                            UpdateNormalItem(i);
+                            UpdateNormalItem(item);
                         }
                         break;
                 }
-                UpdateSellIn(i);
+                UpdateSellIn(item);
             }
         }
 
-        private void ChangeQuality(int i, int delta)
+        private void ChangeQuality(Item item, int delta)
         {
-            Items[i].Quality += delta;
-            if (Items[i].Quality < MinQuality)
+            item.Quality += delta;
+            if (item.Quality < MinQuality)
             {
-                Items[i].Quality = MinQuality;
+                item.Quality = MinQuality;
             }
-            else if (Items[i].Quality > MaxQuality)
+            else if (item.Quality > MaxQuality)
             {
-                Items[i].Quality = MaxQuality;
-            }
-        }
-
-        private void UpdateSellIn(int i)
-        {
-            if (Items[i].Name != SulfurasName)
-            {
-                Items[i].SellIn -= 1;
+                item.Quality = MaxQuality;
             }
         }
 
-        private void UpdateSulfuras(int i)
+        private void UpdateSellIn(Item item)
         {
-            Items[i].Quality = 80;
+            if (item.Name != SulfurasName)
+            {
+                item.SellIn -= 1;
+            }
         }
 
-        private void UpdateAgedBrie(int i)
+        private void UpdateSulfuras(Item item)
         {
-            ChangeQuality(i, Items[i].SellIn <= 0 ? 2 : 1);
+            item.Quality = 80;
         }
 
-        private void UpdateBackstagePass(int i)
+        private void UpdateAgedBrie(Item item)
         {
-            if (Items[i].SellIn <= 0)
+            ChangeQuality(item, item.SellIn <= 0 ? 2 : 1);
+        }
+
+        private void UpdateBackstagePass(Item item)
+        {
+            if (item.SellIn <= 0)
             {
-                Items[i].Quality = 0;
+                item.Quality = 0;
             }
-            else if (Items[i].SellIn < 6)
+            else if (item.SellIn < 6)
             {
-                ChangeQuality(i, 3);
+                ChangeQuality(item, 3);
             }
-            else if (Items[i].SellIn < 11)
+            else if (item.SellIn < 11)
             {
-                ChangeQuality(i, 2);
+                ChangeQuality(item, 2);
             }
             else
             {
-                ChangeQuality(i, 1);
+                ChangeQuality(item, 1);
             }
         }
 
-        private void UpdateConjuredItem(int i)
+        private void UpdateConjuredItem(Item item)
         {
-            UpdateNormalItem(i);
-            UpdateNormalItem(i);
+            UpdateNormalItem(item);
+            UpdateNormalItem(item);
         }
 
-        private void UpdateNormalItem(int i)
+        private void UpdateNormalItem(Item item)
         {
-            if (Items[i].SellIn <= 0)
+            if (item.SellIn <= 0)
             {
-                ChangeQuality(i, -2);
+                ChangeQuality(item, -2);
             }
             else
             {
-                ChangeQuality(i, -1);
+                ChangeQuality(item, -1);
             }
         }
     }
