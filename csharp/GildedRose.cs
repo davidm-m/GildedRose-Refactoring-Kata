@@ -9,10 +9,10 @@ namespace csharp
         public const string SulfurasName = "Sulfuras, Hand of Ragnaros";
         public const string AgedBrieName = "Aged Brie";
         public const string BackstagePassName = "Backstage passes to a TAFKAL80ETC concert";
-        IList<Item> Items;
-        public GildedRose(IList<Item> Items)
+        public readonly IList<Item> Items;
+        public GildedRose(IList<Item> items)
         {
-            this.Items = Items;
+            this.Items = items;
         }
 
         public void UpdateQuality()
@@ -68,20 +68,12 @@ namespace csharp
 
         private void UpdateSulfuras(int i)
         {
-            return;
+            Items[i].Quality = 80;
         }
 
         private void UpdateAgedBrie(int i)
         {
-            if (Items[i].SellIn <= 0)
-            {
-                ChangeQuality(i, 2);
-            }
-            else
-            {
-                ChangeQuality(i, 1);
-            }
-            
+            ChangeQuality(i, Items[i].SellIn <= 0 ? 2 : 1);
         }
 
         private void UpdateBackstagePass(int i)
