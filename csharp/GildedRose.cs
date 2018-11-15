@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace csharp
 {
@@ -13,6 +15,19 @@ namespace csharp
         public GildedRose(IList<Item> items)
         {
             this.Items = items;
+        }
+
+        public void PrintItems()
+        {
+            foreach (var t in Items)
+            {
+                Console.WriteLine(t);
+            }
+        }
+
+        public Item GetItem(int i)
+        {
+            return Items[i];
         }
 
         public void UpdateQuality()

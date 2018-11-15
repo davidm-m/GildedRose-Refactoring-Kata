@@ -25,6 +25,20 @@ namespace csharp
             Assert.AreEqual(expectedQuality, items[0].Quality);
         }
 
+        [Test]
+        public void MultipleItems_HaveTheirQualityChanged()
+        {
+            var items = new List<Item>
+            {
+                new Item {Name = "foo", SellIn = 5, Quality = 5},
+                new Item {Name = "Bar", SellIn = 3, Quality = 10}
+            };
+            var app = new GildedRose(items);
+            app.UpdateQuality();
+            Assert.AreEqual(4, items[0].Quality);
+            Assert.AreEqual(9, items[1].Quality);
+        }
+
         // ReSharper disable once InconsistentNaming
         public static object[] UpdateQualityCases =
         {
