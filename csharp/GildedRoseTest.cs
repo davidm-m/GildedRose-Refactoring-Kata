@@ -51,7 +51,16 @@ namespace csharp
         }
 
         [Test]
-        public void AgedBrieQuality_IncreasesByTwo()
+        public void AgedBrieQuality_IncreasesByOne()
+        {
+            var items = new List<Item> { new Item { Name = "Aged Brie", SellIn = 5, Quality = 0 } };
+            var app = new GildedRose(items);
+            app.UpdateQuality();
+            Assert.AreEqual(1, items[0].Quality);
+        }
+
+        [Test]
+        public void AgedBrieQuality_IncreasesByTwo_AfterSellIn()
         {
             var items = new List<Item> { new Item { Name = "Aged Brie", SellIn = 0, Quality = 0 } };
             var app = new GildedRose(items);
