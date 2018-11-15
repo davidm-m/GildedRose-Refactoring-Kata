@@ -1,38 +1,13 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
+using NUnit.Framework.Interfaces;
+using NUnit.Framework.Internal;
 
 namespace csharp
 {
     [TestFixture]
     public class GildedRoseTest
     {
-        [Test]
-        public void ItemQuality_DecreasesByOne()
-        {
-            var items = new List<Item> { new Item { Name = "foo", SellIn = 5, Quality = 10 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(9, items[0].Quality);
-        }
-
-        [Test]
-        public void ItemQuality_DecreasesByTwo_PastSellIn()
-        {
-            var items = new List<Item> { new Item { Name = "foo", SellIn = 0, Quality = 10 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(8, items[0].Quality);
-        }
-
-        [Test]
-        public void ItemQuality_CannotDecreaseBelowZero()
-        {
-            var items = new List<Item> { new Item { Name = "foo", SellIn = 5, Quality = 0 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(0, items[0].Quality);
-        }
-
         [Test]
         public void SulfurasQuality_IsEighty()
         {
@@ -41,85 +16,44 @@ namespace csharp
             Assert.AreEqual(80, items[0].Quality);
         }
 
-        [Test]
-        public void SulfurasQuality_DoesNotDegrade()
+        [Test, TestCaseSource(nameof(UpdateQualityCases))]
+        public void UpdateQualityTest(Item item, int expectedQuality)
         {
-            var items = new List<Item> { new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = 0, Quality = 80 } };
+            var items = new List<Item> {item};
             var app = new GildedRose(items);
             app.UpdateQuality();
-            Assert.AreEqual(80, items[0].Quality);
+            Assert.AreEqual(expectedQuality, items[0].Quality);
         }
 
-        [Test]
-        public void AgedBrieQuality_IncreasesByOne()
+        // ReSharper disable once InconsistentNaming
+        public static object[] UpdateQualityCases =
         {
-            var items = new List<Item> { new Item { Name = "Aged Brie", SellIn = 5, Quality = 0 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(1, items[0].Quality);
-        }
-
-        [Test]
-        public void AgedBrieQuality_IncreasesByTwo_AfterSellIn()
-        {
-            var items = new List<Item> { new Item { Name = "Aged Brie", SellIn = 0, Quality = 0 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(2, items[0].Quality);
-        }
-
-        [Test]
-        public void ItemQuality_CannotIncreaseAboveFifty()
-        {
-            var items = new List<Item> { new Item { Name = "Aged Brie", SellIn = 0, Quality = 49 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(50, items[0].Quality);
-        }
-
-        [Test]
-        public void BackstagePassQuality_IncreasesByTwo_WithTenDaysLeft()
-        {
-            var items = new List<Item> { new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 10, Quality = 10 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(12, items[0].Quality);
-        }
-
-        [Test]
-        public void BackstagePassQuality_IncreasesByThree_WithFiveDaysLeft()
-        {
-            var items = new List<Item> { new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 5, Quality = 10 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(13, items[0].Quality);
-        }
-
-        [Test]
-        public void BackstagePassQuality_GoesToZero_AfterSellIn()
-        {
-            var items = new List<Item> { new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 0, Quality = 10 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(0, items[0].Quality);
-        }
-
-        [Test]
-        public void ConjuredItemsQuality_DecreasesByTwo()
-        {
-            var items = new List<Item> { new Item { Name = "Conjured Mana Cake", SellIn = 10, Quality = 10 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(8, items[0].Quality);
-        }
-
-        [Test]
-        public void ConjuredItemsQuality_DecreasesByFour_AfterSellIn()
-        {
-            var items = new List<Item> { new Item { Name = "Conjured Mana Cake", SellIn = 0, Quality = 10 } };
-            var app = new GildedRose(items);
-            app.UpdateQuality();
-            Assert.AreEqual(6, items[0].Quality);
-        }
+            new TestCaseData(new Item { Name = "foo", SellIn = 5, Quality = 10 }, 9)
+                .SetName("ItemQuality_DecreasesByOne"),
+            new TestCaseData(new Item { Name = "foo", SellIn = 0, Quality = 10 }, 8)
+                .SetName("ItemQuality_DecreasesByTwo_PastSellIn"),
+            new TestCaseData(new Item { Name = "foo", SellIn = 5, Quality = 0 }, 0)
+                .SetName("ItemQuality_CannotDecreaseBelowZero"),
+            new TestCaseData(new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = 0, Quality = 80 }, 80)
+                .SetName("SulfurasQuality_DoesNotDegrade"),
+            new TestCaseData(new Item { Name = "Aged Brie", SellIn = 5, Quality = 0 }, 1)
+                .SetName("AgedBrieQuality_IncreasesByOne"),
+            new TestCaseData(new Item { Name = "Aged Brie", SellIn = 0, Quality = 0 }, 2)
+                .SetName("AgedBrieQuality_IncreasesByTwo_AfterSellIn"),
+            new TestCaseData(new Item { Name = "Aged Brie", SellIn = 0, Quality = 49 }, 50)
+                .SetName("ItemQuality_CannotIncreaseAboveFifty"),
+            new TestCaseData(new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 12, Quality = 10 }, 11)
+                .SetName("BackstagePassQuality_IncreasesByOne"),
+            new TestCaseData(new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 10, Quality = 10 }, 12)
+                .SetName("BackstagePassQuality_IncreasesByTwo_WithTenDaysLeft"),
+            new TestCaseData(new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 5, Quality = 10 }, 13)
+                .SetName("BackstagePassQuality_IncreasesByThree_WithFiveDaysLeft"),
+            new TestCaseData(new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 0, Quality = 10 }, 0)
+                .SetName("BackstagePassQuality_GoesToZero_AfterSellIn"),
+            new TestCaseData(new Item { Name = "Conjured Mana Cake", SellIn = 10, Quality = 10 }, 8)
+                .SetName("ConjuredItemsQuality_DecreasesByTwo"),
+            new TestCaseData(new Item { Name = "Conjured Mana Cake", SellIn = 0, Quality = 10 }, 6)
+                .SetName("ConjuredItemsQuality_DecreasesByFour_AfterSellIn")
+        };
     }
 }
