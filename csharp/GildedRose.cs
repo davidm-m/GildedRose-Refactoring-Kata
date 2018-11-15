@@ -9,7 +9,7 @@ namespace csharp
         public const string SulfurasName = "Sulfuras, Hand of Ragnaros";
         public const string AgedBrieName = "Aged Brie";
         public const string BackstagePassName = "Backstage passes to a TAFKAL80ETC concert";
-        public readonly IList<Item> Items;
+        IList<Item> Items;
         public GildedRose(IList<Item> items)
         {
             this.Items = items;

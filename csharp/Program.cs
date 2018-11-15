@@ -33,7 +33,8 @@ namespace csharp
                     SellIn = 5,
                     Quality = 49
                 },
-				new Item {Name = "Conjured Mana Cake", SellIn = 3, Quality = 6}
+				new Item {Name = "Conjured Mana Cake", SellIn = 3, Quality = 6},
+                new Item {Name = "Conjured Monocle", SellIn = 3, Quality = 12}
             };
 
             var app = new GildedRose(Items);
